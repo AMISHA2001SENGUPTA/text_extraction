@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,14 +7,14 @@
     <title>Image Text Summarizer</title>
 </head>
 <body>
-    <h1>Upload an Image</h1>
+    <h1>Upload an Image to Summarize Text</h1>
     <input type="file" id="image-upload" accept="image/*">
     <button onclick="processImage()">Summarize Text</button>
     <p id="output"></p>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <!-- Include Tesseract.js for OCR -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
+    <!-- Link to the JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>
-
