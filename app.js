@@ -6,29 +6,38 @@ async function processImage() {
         return;
     }
 
-    // Load the image
+    // Display a message while processing the image
+    document.getElementById('output').textContent = 'Processing the image...';
+
     const image = new Image();
     image.src = URL.createObjectURL(imageUpload.files[0]);
     image.onload = async () => {
-        // Preprocess the image and run your model here
-        // You can use an existing OCR library like Tesseract.js for OCR
         const { createWorker } = Tesseract;
         const worker = createWorker();
 
+        // Load Tesseract.js worker
         await worker.load();
         await worker.loadLanguage('eng');
         await worker.initialize('eng');
-        const { data: { text } } = await worker.recognize(image);
+        try {
+            // Perform OCR on the image
+            const { data: { text } } = await worker.recognize(image);
+            console.log('Extracted text:', text);
 
-        // Summarize text using a simple algorithm
-        const summary = summarizeText(text);
-        document.getElementById('output').textContent = summary;
-
+            // Summarize the extracted text
+            const summary = summarizeText(text);
+            document.getElementById('output').textContent = summary;
+        } catch (error) {
+            console.error('OCR processing failed:', error);
+            document.getElementById('output').textContent = 'Failed to process the image.';
+        }
         await worker.terminate();
     };
 }
 
 function summarizeText(text) {
-    // Simple summarization example: take the first 100 words
-    return text.split(' ').slice(0, 100).join(' ') + '...';
+    // Basic summarization: First 100 words
+    const summary = text.split(' ').slice(0, 100).join(' ') + '...';
+    console.log('Summary:', summary);
+    return summary;
 }
