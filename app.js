@@ -18,16 +18,20 @@ async function processImage() {
     const image = new Image();
     image.src = URL.createObjectURL(imageUpload.files[0]);
 
-    // Log when the image starts loading
     console.log("Image is loading...");
 
     image.onload = async () => {
         console.log("Image loaded. Starting OCR...");
 
         const { createWorker } = Tesseract;
-        const worker = createWorker();
+        const worker = createWorker({
+            logger: info => console.log(info) // Log OCR process details
+        });
 
         try {
+            // Set loading message
+            status.textContent = 'Extracting text from image...';
+
             // Initialize worker and set language
             await worker.loadLanguage('eng');
             await worker.initialize('eng');
@@ -38,30 +42,30 @@ async function processImage() {
             console.log('Extracted text:', text);
 
             if (text.trim() === "") {
-                status.textContent = 'No text found in the image.';
+                status.textContent = 'No text found in the image. Try another image.';
                 return;
             }
 
             // Summarize the extracted text
             const summary = summarizeText(text);
             console.log("Summary generated:", summary);
+
+            // Update the UI with the summary
             output.textContent = `Summary:\n${summary}`;
+            status.textContent = ''; // Clear the status
         } catch (error) {
             console.error('OCR failed:', error);
-            status.textContent = 'Failed to extract text from the image.';
+            status.textContent = 'Failed to extract text from the image. Please try again with a different image.';
         }
 
         // Terminate Tesseract worker
         await worker.terminate();
         console.log("Tesseract worker terminated.");
-
-        // Clear status message
-        status.textContent = '';
     };
 
     image.onerror = () => {
         console.error("Failed to load the image.");
-        status.textContent = 'Failed to load the image.';
+        status.textContent = 'Failed to load the image. Please try another file.';
     };
 }
 
