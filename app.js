@@ -1,4 +1,3 @@
-// app.js
 async function processImage() {
     const imageUpload = document.getElementById('image-upload');
     const status = document.getElementById('status');
@@ -19,23 +18,39 @@ async function processImage() {
     const image = new Image();
     image.src = URL.createObjectURL(imageUpload.files[0]);
 
+    // Log when the image starts loading
+    console.log("Image is loading...");
+
     // When the image loads, perform OCR using Tesseract.js
     image.onload = async () => {
+        console.log("Image loaded. Starting OCR...");
+
         const { createWorker } = Tesseract;
         const worker = createWorker();
 
-        // Load Tesseract worker
-        await worker.load();
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
-
         try {
+            // Load the worker and initialize OCR for English text
+            await worker.load();
+            console.log("Tesseract worker loaded.");
+
+            await worker.loadLanguage('eng');
+            console.log("Tesseract language loaded.");
+
+            await worker.initialize('eng');
+            console.log("Tesseract initialized.");
+
             // Perform OCR to extract text from the image
             const { data: { text } } = await worker.recognize(image);
             console.log('Extracted text:', text);
 
+            if (text.trim() === "") {
+                status.textContent = 'No text found in the image.';
+                return;
+            }
+
             // Summarize the extracted text
             const summary = summarizeText(text);
+            console.log("Summary generated:", summary);
             output.textContent = `Summary:\n${summary}`;
         } catch (error) {
             console.error('OCR failed:', error);
@@ -44,12 +59,14 @@ async function processImage() {
 
         // Terminate Tesseract worker
         await worker.terminate();
+        console.log("Tesseract worker terminated.");
 
         // Clear status message
         status.textContent = '';
     };
 
     image.onerror = () => {
+        console.error("Failed to load the image.");
         status.textContent = 'Failed to load the image.';
     };
 }
