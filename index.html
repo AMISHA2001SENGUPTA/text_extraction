@@ -1,20 +1,23 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Text Summarizer</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to external CSS for styling -->
 </head>
 <body>
-    <h1>Upload an Image to Summarize Text</h1>
-    <input type="file" id="image-upload" accept="image/*">
-    <button onclick="processImage()">Summarize Text</button>
-    <p id="output"></p>
+    <div class="container">
+        <h1>Upload an Image to Summarize Text</h1>
+        <input type="file" id="image-upload" accept="image/*" />
+        <button id="summarize-button" onclick="processImage()">Summarize Text</button>
+        <p id="status"></p> <!-- Placeholder for status messages -->
+        <div id="output"></div> <!-- Placeholder for text summary -->
+    </div>
 
-    <!-- Include Tesseract.js for OCR -->
+    <!-- Tesseract.js for OCR -->
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
-    <!-- Link to the JavaScript file -->
+    <!-- Link to the custom JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>
