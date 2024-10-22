@@ -21,7 +21,6 @@ async function processImage() {
     // Log when the image starts loading
     console.log("Image is loading...");
 
-    // When the image loads, perform OCR using Tesseract.js
     image.onload = async () => {
         console.log("Image loaded. Starting OCR...");
 
@@ -29,13 +28,8 @@ async function processImage() {
         const worker = createWorker();
 
         try {
-            // Load the worker and initialize OCR for English text
-            await worker.load();
-            console.log("Tesseract worker loaded.");
-
+            // Initialize worker and set language
             await worker.loadLanguage('eng');
-            console.log("Tesseract language loaded.");
-
             await worker.initialize('eng');
             console.log("Tesseract initialized.");
 
